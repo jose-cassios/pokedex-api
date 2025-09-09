@@ -1,18 +1,22 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import FavoriteContext from "./contexts/FavContexts";
 
 const Navbar = () => {
-  const {favoritePokemons} = useContext(FavoriteContext)
-  const navbarLogo = "https://raw.githubusercontent.com/PokeAPI/media/master/logo/pokeapi_256.png"
+  const { favoritePokemons } = useContext(FavoriteContext);
+  const navbarLogo = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/2560px-International_Pok%C3%A9mon_logo.svg.png";
+
   return (
-    <nav className="flex rounded-md items-center justify-between bg-green-500 m-5 p-4 shadow-md sm:pr-20">
-      <div className="hover:scale-110 transition">
+    <nav className="flex items-center justify-between p-4 my-4">
+      <div>
         <img
-        className="w-auto"
-        alt = "PokeApi-logo"
-        src={navbarLogo}/>
+          className="w-48"
+          alt="PokeApi-logo"
+          src={navbarLogo}
+        />
       </div>
-      <div className="sm:text-xl ml-10 bg-slate-300 rounded-md p-2">Favoritos {favoritePokemons.length}❤️</div>
+      <div className="text-white font-bold text-lg">
+        Favoritos {favoritePokemons.length} ❤️
+      </div>
     </nav>
   );
 };
