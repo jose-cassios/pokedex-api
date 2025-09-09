@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
-import Seachbar from "./components/Seacherbar";
+import Searchbar from "./components/Seachbar";
 import Pokedex from "./components/pokedex";
 import { getPokemons, getPokemonsData, searchPokemon } from "./api";
 import { FavoriteProvider } from "./components/contexts/FavContexts";
@@ -84,9 +84,9 @@ function App() {
         updateFavoritePokemons: updateFavoritePokemons,
       }}
     >
-      <div className="flex flex-col min-h-screen bg-slate-300">
+      <div className="container mx-auto">
         <Navbar/>
-        <Seachbar onSearch={onSearchHandler}/>
+        <Searchbar onSearch={onSearchHandler}/>
         {notFound ? (
           <div className="flex font-semibold capitalize ml-4"> Pokemon Não Encontrado</div>
           ) : 
