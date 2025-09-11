@@ -6,7 +6,7 @@ import Pokedex from "./components/pokedex";
 import { getPokemons, getPokemonsData, searchPokemon } from "./api";
 import { FavoriteProvider } from "./components/contexts/FavContexts";
 
-const favoriteKey = "k";
+const favoriteKey = "favorites";
 function App() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -35,8 +35,12 @@ function App() {
   };
 
   const loadFavoritePokemons = () => {
-    const pokemons = JSON.parse(window.localStorage.getItem(favoriteKey)) || []; 
-    setFavorites(pokemons);
+    try {
+      const pokemons = JSON.parse(window.localStorage.getItem(favoriteKey)) || [];
+      setFavorites(pokemons);
+    } catch (error) {
+      console.error("Failed to load favorite pokemons from localStorage", error);
+    }
   };
 
   useEffect(() => {

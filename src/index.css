@@ -27,7 +27,7 @@ body {
   transform-style: preserve-3d;
 }
 
-.pokemon-card:hover .pokemon-card-inner {
+.pokemon-card.is-flipped .pokemon-card-inner {
   transform: rotateY(180deg);
 }
 
@@ -62,9 +62,6 @@ body {
   align-items: center;
 }
 
-.pokemon-card:hover {
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-}
 
 .pokeball-loader {
   width: 50px;

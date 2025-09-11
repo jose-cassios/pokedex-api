@@ -1,17 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import FavoriteContext from "./contexts/FavContexts";
 
 const Pokemon = (props) => {
   const { favoritePokemons, updateFavoritePokemons } = useContext(FavoriteContext);
   const { pokemon } = props;
+  const [isFlipped, setIsFlipped] = useState(false);
+
   const onHeartClick = (e) => {
     e.stopPropagation();
     updateFavoritePokemons(pokemon.name);
   };
+
+  const handleCardClick = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   const heart = favoritePokemons.includes(pokemon.name) ? "❤️" : "🖤";
 
   return (
-    <div className="pokemon-card">
+    <div
+      className={`pokemon-card ${isFlipped ? "is-flipped" : ""}`}
+      onClick={handleCardClick}
+    >
       <div className="pokemon-card-inner">
         <div className="pokemon-card-front">
           <div className="flex justify-center">
