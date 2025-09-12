@@ -16,10 +16,10 @@ function App() {
   const [favorites, setFavorites] = useState([]);
 
   const itensPerPage = 27;
-  const fetchPokemons = async () => {
+  const fetchPokemons = React.useCallback(async () => {
     try {
-      setLoading(true)
-      setNotFound(false)
+      setLoading(true);
+      setNotFound(false);
       const data = await getPokemons(itensPerPage, itensPerPage * page);
       const promises = data.results.map(async (pokemon) => {
         return await getPokemonsData(pokemon.url);
@@ -32,7 +32,7 @@ function App() {
     } catch (error) {
       console.log("FetchPokemons error", error);
     }
-  };
+  }, [page]);
 
   const loadFavoritePokemons = () => {
     try {
@@ -50,7 +50,7 @@ function App() {
   useEffect(() => {
     console.log("carregou");
     fetchPokemons();
-  }, [page]);
+  }, [page, fetchPokemons]);
 
   const updateFavoritePokemons = (name) => {
     const updatedFavorites = [...favorites];

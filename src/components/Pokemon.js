@@ -1,81 +1,141 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import FavoriteContext from "./contexts/FavContexts";
 
 const Pokemon = (props) => {
   const { favoritePokemons, updateFavoritePokemons } = useContext(FavoriteContext);
   const { pokemon } = props;
-  const [isFlipped, setIsFlipped] = useState(false);
 
-  const onHeartClick = (e) => {
-    e.stopPropagation();
+  const onHeartClick = () => {
     updateFavoritePokemons(pokemon.name);
-  };
-
-  const handleCardClick = () => {
-    setIsFlipped(!isFlipped);
   };
 
   const heart = favoritePokemons.includes(pokemon.name) ? "❤️" : "🖤";
 
+  // Mapping for stat names
+  const statNameMapping = {
+    hp: "HP",
+    attack: "ATK",
+    defense: "DEF",
+    "special-attack": "SPA",
+    "special-defense": "SPD",
+    speed: "SPD",
+  };
+
+  // Function to get type color
+  const getTypeColor = (type, variant = 'bg') => {
+    const colors = {
+      grass: "green",
+      fire: "red",
+      water: "blue",
+      bug: "yellow",
+      normal: "gray",
+      poison: "purple",
+      electric: "yellow",
+      ground: "yellow",
+      fairy: "pink",
+      fighting: "red",
+      psychic: "pink",
+      rock: "yellow",
+      ghost: "purple",
+      ice: "blue",
+      dragon: "indigo",
+      dark: "gray",
+      steel: "gray",
+      flying: "indigo",
+    };
+    const color = colors[type] || "gray";
+    if (variant === 'bg') return `bg-${color}-500`;
+    if (variant === 'bg-light') return `bg-${color}-200`;
+    return `border-${color}-500`;
+  };
+  
+  const statColors = {
+      hp: "bg-red-500",
+      attack: "bg-orange-500",
+      defense: "bg-yellow-500",
+      "special-attack": "bg-blue-400",
+      "special-defense": "bg-green-400",
+      speed: "bg-pink-400",
+  }
+
+  const primaryType = pokemon.types[0].type.name;
+
   return (
-    <div
-      className={`pokemon-card ${isFlipped ? "is-flipped" : ""}`}
-      onClick={handleCardClick}
-    >
-      <div className="pokemon-card-inner">
-        <div className="pokemon-card-front">
-          <div className="flex justify-center">
-            <img
-              alt={pokemon.name}
-              src={pokemon.sprites.front_default}
-              className="w-48 h-48 object-contain"
-            />
-          </div>
-          <div className="w-full p-4">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xl font-bold capitalize">{pokemon.name}</h3>
-              <div className="text-lg font-semibold">#{pokemon.id}</div>
-            </div>
-            <div className="flex justify-between items-center">
-              <div className="flex space-x-1">
-                {pokemon.types.map((type, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="px-2 py-1 bg-gray-200 rounded-full text-sm font-semibold"
-                    >
-                      {type.type.name}
+    <div className={`pokemon-card-new font-sans rounded-2xl overflow-hidden shadow-lg`}>
+      {/* Blue border */}
+      <div className="border-4 border-blue-400 rounded-2xl">
+        {/* Yellow border */}
+        <div className="border-4 border-yellow-400 rounded-xl">
+          {/* Main content */}
+          <div className="bg-white p-1">
+            {/* Header */}
+            <div className={`rounded-t-lg ${getTypeColor(primaryType)}`}>
+                <div className="flex justify-between items-center text-white p-2">
+                    <h2 className="text-2xl font-bold capitalize">{pokemon.name}</h2>
+                    <div className="flex items-center">
+                      <span className="text-xl font-bold mr-2">#{String(pokemon.id).padStart(3, '0')}</span>
+                      <button onClick={onHeartClick} className="text-2xl">
+                        {heart}
+                      </button>
                     </div>
-                  );
-                })}
-              </div>
-              <button
-                className="text-2xl"
-                onClick={onHeartClick}
-              >
-                {heart}
-              </button>
+                </div>
+            </div>
+
+            {/* Image */}
+            <div className={`${getTypeColor(primaryType, 'bg-light')} p-1`}>
+                <img alt={pokemon.name} src={pokemon.sprites.other['official-artwork'].front_default} className="w-full h-40 object-contain"/>
+            </div>
+
+            {/* Types & HP */}
+            <div className={`p-2 flex justify-between items-center ${getTypeColor(primaryType, 'bg-light')}`}>
+                <div className="flex">
+                {pokemon.types.map((typeInfo, index) => (
+                    <span key={index} className={`px-3 py-1 mr-2 rounded-full text-white font-bold text-xs ${getTypeColor(typeInfo.type.name)}`}>
+                    {typeInfo.type.name.charAt(0).toUpperCase() + typeInfo.type.name.slice(1)}
+                    </span>
+                ))}
+                </div>
+                <div className="flex items-center">
+                <span className="text-md font-bold mr-1">HP</span>
+                <span className="text-xl font-bold">{pokemon.stats.find(stat => stat.stat.name === 'hp').base_stat}</span>
+                </div>
+            </div>
+
+            {/* Info */}
+            <div className={`px-2 pt-2 ${getTypeColor(primaryType, 'bg-light')} grid grid-cols-2 gap-2 text-xs`}>
+                <div>
+                    <p><strong>Altura:</strong> {pokemon.height / 10} m</p>
+                    <p><strong>Peso:</strong> {pokemon.weight / 10} kg</p>
+                </div>
+                <div>
+                    <p className="font-bold">Abilities:</p>
+                    <ul className="list-disc list-inside">
+                        {pokemon.abilities.slice(0, 2).map((abilityInfo, index) => (
+                        <li key={index} className="capitalize">{abilityInfo.ability.name}</li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+
+            {/* Base Stats */}
+            <div className={`px-2 py-2 ${getTypeColor(primaryType, 'bg-light')}`}>
+                <h3 className="font-bold text-sm mb-1">Status Base:</h3>
+                {pokemon.stats.map((statInfo, index) => (
+                <div key={index} className="grid grid-cols-6 items-center mb-1 text-xs">
+                    <span className="col-span-1 font-bold">{statNameMapping[statInfo.stat.name] || statInfo.stat.name}</span>
+                    <div className="col-span-4 bg-gray-300 rounded-full h-3">
+                    <div className={`${statColors[statInfo.stat.name] || 'bg-gray-500'} h-3 rounded-full`} style={{ width: `${(statInfo.base_stat / 255) * 100}%` }}></div>
+                    </div>
+                    <span className="col-span-1 text-right font-bold">{statInfo.base_stat}</span>
+                </div>
+                ))}
+            </div>
+
+            {/* Footer */}
+            <div className="text-center text-xs py-1 bg-gray-300 rounded-b-lg">
+                <p>©2024 Pokémon/Nintendo</p>
             </div>
           </div>
-        </div>
-        <div className="pokemon-card-back">
-            <div className="w-full p-4">
-                <h3 className="text-xl font-bold capitalize mb-2">{pokemon.name} Details</h3>
-                <p><strong>Height:</strong> {pokemon.height / 10} m</p>
-                <p><strong>Weight:</strong> {pokemon.weight / 10} kg</p>
-                <h4 className="font-bold mt-2">Abilities:</h4>
-                <ul>
-                    {pokemon.abilities.map((ability, index) => (
-                        <li key={index}>{ability.ability.name}</li>
-                    ))}
-                </ul>
-                <h4 className="font-bold mt-2">Base Stats:</h4>
-                <ul>
-                    {pokemon.stats.map((stat, index) => (
-                        <li key={index}>{stat.stat.name}: {stat.base_stat}</li>
-                    ))}
-                </ul>
-            </div>
         </div>
       </div>
     </div>
